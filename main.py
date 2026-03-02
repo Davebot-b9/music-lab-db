@@ -28,22 +28,6 @@ from fastapi.responses import FileResponse
 # Include the API router
 app.include_router(api_router, prefix="/api")
 
-# Serve the static files from Angular built directory
-frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Web", "Angular", "music-place-dashboard", "dist", "music-place-dashboard", "browser"))
-
 @app.get("/")
 def read_root():
-    return FileResponse(os.path.join(frontend_path, "index.csr.html"))
-
-@app.get("/{full_path:path}")
-async def serve_angular(full_path: str):
-    if full_path.startswith("api/"):
-        # Let FastAPI return 404 for unhandled API routes instead of the angular app
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="API route not found")
-        
-    target_path = os.path.join(frontend_path, full_path)
-    if full_path != "" and os.path.exists(target_path) and os.path.isfile(target_path):
-        return FileResponse(target_path)
-    # Return index.csr.html for Angular routes (client-side routing)
-    return FileResponse(os.path.join(frontend_path, "index.csr.html"))
+    return {"status": "ok", "message": "Music Lab API is running. Visit /docs for documentation."}
